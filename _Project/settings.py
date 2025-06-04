@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['iss-vessel-lineup-wdy7t.ondigitalocean.app']
 
 
 # Application definition
