@@ -97,7 +97,7 @@ db_info = urlparse(DATABASE_URL)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db',
+        'NAME': 'iss-lineup-database',
         'USER': db_info.username,
         'PASSWORD': db_info.hostname,
         'PORT': db_info.port,
