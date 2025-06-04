@@ -99,7 +99,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'iss-lineup-database',
         'USER': db_info.username,
-        'PASSWORD': db_info.hostname,
+        'PASSWORD': db_info.password,
+        'HOST': db_info.hostname,
         'PORT': db_info.port,
         'OPTIONS': {'sslmode':'require'},
     }
