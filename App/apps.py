@@ -33,8 +33,8 @@ class AppConfig(AppConfig):
             scheduler.add_job(
                 move_sailed_data,
                 trigger='cron',
-                hour=23,
-                minute=59,  
+                hour=0,
+                minute=58,  
                 id='move_sailed_data',
                 replace_existing=True
             )
