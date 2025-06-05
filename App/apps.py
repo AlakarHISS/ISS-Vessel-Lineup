@@ -17,8 +17,8 @@ class AppConfig(AppConfig):
 
         logger = logging.getLogger(__name__)
 
-        if os.environ.get('RUN_MAIN') != 'true':
-            return
+        # if os.environ.get('RUN_MAIN') != 'true':
+        #     return
 
         def job_listener(event):
             if event.exception:
