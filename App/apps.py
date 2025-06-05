@@ -29,63 +29,62 @@ class AppConfig(AppConfig):
         scheduler = BackgroundScheduler()
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
-        if not scheduler.get_jobs():
-            scheduler.add_job(
-                move_sailed_data,
-                trigger='cron',
-                hour=0,
-                minute=58,  
-                id='move_sailed_data',
-                replace_existing=True
-            )
-
-            scheduler.add_job(
-                send_port_update_emails,
-                trigger='cron',
-                hour=11,
-                minute=30,
-                id='send_port_update_emails',
-                replace_existing=True,
-                coalesce=True,
-                max_instances=1,
-            )
-
-            scheduler.add_job(
-                send_port_update_emails,
-                trigger='cron',
-                hour=12,
-                minute=30,
-                id='send_port_update_emails',
-                replace_existing=True,
-                coalesce=True,
-                max_instances=1,
-            )
-
-            scheduler.add_job(
-                send_port_update_emails,
-                trigger='cron',
-                hour=13,
-                minute=30,
-                id='send_port_update_emails',
-                replace_existing=True,
-                coalesce=True,
-                max_instances=1,
-            )
-
-            scheduler.add_job(
-                send_port_update_missed_emails,
-                trigger='cron',
-                hour=16,
-                minute=59,
-                id='send_port_update_missed_emails',
-                replace_existing=True,
-                coalesce=True,
-                max_instances=1,
-            )
-
-        scheduler.add_listener(job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
-
         try:
+            if not scheduler.get_jobs():
+                scheduler.add_job(
+                    move_sailed_data,
+                    trigger='cron',
+                    hour=0,
+                    minute=58,  
+                    id='move_sailed_data',
+                    replace_existing=True
+                )
+
+                scheduler.add_job(
+                    send_port_update_emails,
+                    trigger='cron',
+                    hour=11,
+                    minute=30,
+                    id='send_port_update_emails',
+                    replace_existing=True,
+                    coalesce=True,
+                    max_instances=1,
+                )
+
+                scheduler.add_job(
+                    send_port_update_emails,
+                    trigger='cron',
+                    hour=12,
+                    minute=30,
+                    id='send_port_update_emails',
+                    replace_existing=True,
+                    coalesce=True,
+                    max_instances=1,
+                )
+
+                scheduler.add_job(
+                    send_port_update_emails,
+                    trigger='cron',
+                    hour=13,
+                    minute=30,
+                    id='send_port_update_emails',
+                    replace_existing=True,
+                    coalesce=True,
+                    max_instances=1,
+                )
+
+                scheduler.add_job(
+                    send_port_update_missed_emails,
+                    trigger='cron',
+                    hour=16,
+                    minute=59,
+                    id='send_port_update_missed_emails',
+                    replace_existing=True,
+                    coalesce=True,
+                    max_instances=1,
+                )
+
+            scheduler.add_listener(job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
             scheduler.start()
             logger.info("Scheduler started successfully.")
         except Exception as e:
