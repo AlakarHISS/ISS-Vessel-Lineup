@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="{% static 'assets/Images/Picture21.png' %}">
     <link rel="stylesheet" href="{% static 'css/lineupForm.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+    
 </head>
 <body>
     <script>
@@ -43,6 +44,197 @@
                 }
             });
         }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('exportBtn').addEventListener('click', function (event) {
+            // Get the selected port
+            const selectedPort = document.getElementById('port').value;
+
+            // Check if a port is selected
+            if (!selectedPort) {
+                alert('Please select a port before exporting.'); // Show an alert
+                return; // Stop further execution
+            }
+
+            // Proceed with the export if a port is selected
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('LineUp Data');
+
+            // Add 3 blank rows
+            worksheet.addRow([]);
+            worksheet.addRow([]);
+            worksheet.addRow([]);
+
+            // Merge cells A1 to M2 and add the header
+            worksheet.mergeCells('A1:K2');
+            const mergedCell = worksheet.getCell('A1');
+            mergedCell.value = `ISS SHIPPING VESSEL LINEUP FOR ${selectedPort}`;
+            mergedCell.font = { bold: true, size: 16, color: { argb: 'FFFFFFFF' } }; // White text
+            mergedCell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FF0070C0' } // Blue background (hex: #0070C0)
+            };
+            mergedCell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }; // Wrap text
+
+            // Add table headers (excluding the hidden port column, Vessel Type, Charterer Agent, and the last two columns)
+            const headers = [];
+            const headerRows = document.querySelectorAll('#myTable thead th');
+            headerRows.forEach((header, index) => {
+                // Skip the hidden port column, Vessel Type, Charterer Agent, and the last two columns (Edit and Delete)
+                if (
+                    !header.classList.contains('portColumn') &&
+                    !header.classList.contains('Ticon') &&
+                    header.innerText.trim() !== 'Vessel Type' &&
+                    header.innerText.trim() !== 'Charterer Agent'
+                ) {
+                    headers.push(header.innerText.trim());
+                }
+            });
+            worksheet.addRow(headers);
+
+            // Style the headers
+            const headerRow = worksheet.getRow(4); // Row 4 contains the headers
+            headerRow.eachCell(cell => {
+                cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }; // White text
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF4F81BD' } // Dark blue background (hex: #4F81BD)
+                };
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' },
+                };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true }; // Wrap text
+            });
+
+            // Add visible table rows (excluding the hidden port column, Vessel Type, Charterer Agent, and the last two columns)
+            const tableRows = document.querySelectorAll('#myTable tbody tr');
+            tableRows.forEach(row => {
+                // Check if the row is visible (not hidden by the filter)
+                if (row.style.display !== 'none') {
+                    const rowData = [];
+                    const cells = row.querySelectorAll('td');
+                    cells.forEach((cell, index) => {
+                        // Skip the hidden port column, Vessel Type, Charterer Agent, and the last two columns (Edit and Delete)
+                        if (
+                            !cell.classList.contains('portColumn') &&
+                            !cell.classList.contains('Ticon') &&
+                            !cell.classList.contains('vesselTypeColumn') && // Add this class to the Vessel Type column in your HTML
+                            !cell.classList.contains('chartererAgentColumn') // Add this class to the Charterer Agent column in your HTML
+                        ) {
+                            rowData.push(cell.innerText.trim());
+                        }
+                    });
+                    worksheet.addRow(rowData);
+                }
+            });
+
+            // Style the table rows
+            worksheet.eachRow((row, rowNumber) => {
+                if (rowNumber > 4) { // Skip the header row and merged cells
+                    row.eachCell(cell => {
+                        cell.border = {
+                            top: { style: 'thin' },
+                            left: { style: 'thin' },
+                            bottom: { style: 'thin' },
+                            right: { style: 'thin' },
+                        };
+                        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    });
+                }
+            });
+
+            // Set fixed column widths
+            worksheet.columns = [
+                { width: 22 }, // Column A
+                { width: 20 }, // Column B
+                { width: 21 }, // Column C
+                { width: 21 }, // Column D
+                { width: 21 }, // Column E
+                { width: 15 }, // Column F
+                { width: 15 }, // Column G
+                { width: 10 }, // Column H
+                { width: 15 }, // Column I
+                { width: 17 }, // Column J
+                { width: 20 }, // Column K
+            ];
+
+            // Write the workbook to a file
+            workbook.xlsx.writeBuffer().then(buffer => {
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `ISS_Shipping_Vessel_Lineup_${selectedPort}.xlsx`; // Dynamic file name with port name
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }).catch(error => {
+                console.error('Error creating workbook:', error);
+            });
+        });
+        });
+
+        
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const autocompleteFields = [
+                { id: 'shipper', datalistId: 'shipper-suggestions', field: 'Shipper' },
+                { id: 'receiver', datalistId: 'receiver-suggestions', field: 'Receiver' },
+                { id: 'principal', datalistId: 'principal-suggestions', field: 'Principal' },
+                { id: 'owner', datalistId: 'owner-suggestions', field: 'Owner' },
+                { id: 'lastport', datalistId: 'lastport-suggestions', field: 'LastPort' },
+                { id: 'nextport', datalistId: 'nextport-suggestions', field: 'NextPort' },
+                { id: 'loadPort', datalistId: 'loadPort-suggestions', field: 'LoadPort' },
+                { id: 'dischargePort', datalistId: 'dischargePort-suggestions', field: 'DischargePort' },
+                { id: 'cAgent', datalistId: 'cAgent-suggestions', field: 'ChartererAgent' },
+                { id: 'agent', datalistId: 'agent-suggestions', field: 'OwnersAgent' },
+            ];
+
+            autocompleteFields.forEach(({ id, datalistId, field }) => {
+                const inputField = document.getElementById(id);
+                const datalist = document.getElementById(datalistId);
+
+                if (inputField && datalist) {
+                    inputField.addEventListener('input', function () {
+                        const query = inputField.value.trim();
+                        console.log(`Input detected for field: ${field}, query: ${query}`);
+
+                        if (query.length >= 2) { // Fetch suggestions only if at least 2 characters are typed
+                            fetch(`/get-autocomplete-suggestions/?query=${query}&field=${field}`)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Network response was not ok');
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log(`Suggestions received for field: ${field}`, data);
+                                    datalist.innerHTML = ''; // Clear previous suggestions
+                                    data.forEach(value => {
+                                        const option = document.createElement('option');
+                                        option.value = value;
+                                        datalist.appendChild(option);
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching suggestions:', error);
+                                });
+                        } else {
+                            datalist.innerHTML = ''; // Clear suggestions if query is too short
+                        }
+                    });
+                } else {
+                    console.error(`Input field or datalist not found for field: ${field}`);
+                }
+            });
+        });
+
     </script>
     <header>
         <div class="logo">
@@ -53,7 +245,7 @@
                 <h1>ISS Shipping India - Vessel LineUp</h1>
             </div>
             <div class="menu">
-                {% if request.session.UserType == 'Admin' %}
+                {% if request.session.UserType == 'admin' %}
                 <p class="ur_name">Hello! {{ request.session.FirstName }}</p>
                 <p><a href="{%url 'lineupform'%}" class="nav">LineUp Form</a></p>
                 <p><a href="{%url 'extractdata'%}" class="nav">Extract Data</a></p>
@@ -61,13 +253,13 @@
                 <p><a href="{%url 'addportberth'%}" class="nav">Add Port/Berth</a></p>
                 <p><a href="{%url 'signup'%}" class="nav">User Registration</a></p>
 
-                {% elif request.session.UserType == 'Superuser' %}
+                {% elif request.session.UserType == 'superuser' %}
                 <p class="ur_name">Hello! {{ request.session.FirstName }}</p>
                 <p><a href="{%url 'lineupform'%}" class="nav">LineUp Form</a></p>
                 <p><a href="{%url 'extractdata'%}" class="nav">Extract Data</a></p>
                 <p><a href="{%url 'signin'%}" class="nav">Logout</a></p>
 
-                {% elif request.session.UserType == 'User' %}
+                {% elif request.session.UserType == 'user' %}
                 <p class="ur_name">Hello! {{ request.session.FirstName }}</p>
                 <p><a href="{%url 'signin'%}" class="nav">Logout</a></p>
                 {% endif %}
@@ -179,6 +371,15 @@
                                 }
                             });
 
+                            
+
+                        </script>
+                        
+                        <div class="flex2_div">
+                            <label class="lable1" for="imono">IMO No:</label>
+                            <input class="fill" type="text" name="imono" id="imono">
+                        </div>
+                        <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 // Add event listener to IMO field
                                 document.getElementById('imono').addEventListener('change', function() {
@@ -217,13 +418,7 @@
                                     document.getElementById('draft').value = '';
                                 }
                             });
-
                         </script>
-                        
-                        <div class="flex2_div">
-                            <label class="lable1" for="imono">IMO No:</label>
-                            <input class="fill" type="text" name="imono" id="imono">
-                        </div>
                         <div class="flex2_div">
                             <label class="lable1" for="vesselSlt">Slt. Name:</label>
                             <select class="fillvst" type="text" name="vesselSlt" id="vesselSlt">
@@ -412,12 +607,12 @@
                     <section class="containersub">
                         {% if request.session.UserType == 'Admin' %}
                         <input class="Submitbotton" type="reset" name="clearAll" value="CLEAR ALL" id="clearAll"></input>
-                        <input class="Submitbotton" type="submit" name="submit" value="SUBMIT LINEUP" id="submit">
+                        <input class="Submitbotton" type="submit" name="submit" value="SUBMIT LINEUP" id="submit"></input>
                         <button id="exportBtn" type="button" class="Submitbotton">Export to Excel</button>
 
                         {% elif request.session.UserType == 'Superuser' %}
                         <input class="Submitbotton" type="reset" name="clearAll" value="CLEAR ALL" id="clearAll"></input>
-                        <input class="Submitbotton" type="submit" name="submit" value="SUBMIT LINEUP" id="submit">
+                        <input class="Submitbotton" type="submit" name="submit" value="SUBMIT LINEUP" id="submit"></input>
                         <button id="exportBtn" type="button" class="Submitbotton">Export to Excel</button>
 
                         {% elif request.session.UserType == 'User' %}
