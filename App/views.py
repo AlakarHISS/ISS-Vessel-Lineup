@@ -117,7 +117,7 @@ def index_pg(request):
             return redirect('usersignup')
 
         if user.Password != password:
-            messages.error(request, 'Password is incorrect.')
+            messages.error(request, 'Password is incorrect. Please try again.')
             return redirect('signin')
 
         # Store user ID in session after successful login
