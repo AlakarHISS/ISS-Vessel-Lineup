@@ -53,7 +53,7 @@
                 <h1>ISS Shipping India - Vessel LineUp</h1>
             </div>
             <div class="menu">
-                {% if request.session.UserType == 'admin' %}
+                {% if request.session.UserType == 'Admin' %}
                 <p class="ur_name">Hello! {{ request.session.FirstName }}</p>
                 <p><a href="{%url 'lineupform'%}" class="nav">LineUp Form</a></p>
                 <p><a href="{%url 'extractdata'%}" class="nav">Extract Data</a></p>
@@ -61,13 +61,13 @@
                 <p><a href="{%url 'addportberth'%}" class="nav">Add Port/Berth</a></p>
                 <p><a href="{%url 'signup'%}" class="nav">User Registration</a></p>
 
-                {% elif request.session.UserType == 'superuser' %}
+                {% elif request.session.UserType == 'Superuser' %}
                 <p class="ur_name">Hello! {{ request.session.FirstName }}</p>
                 <p><a href="{%url 'lineupform'%}" class="nav">LineUp Form</a></p>
                 <p><a href="{%url 'extractdata'%}" class="nav">Extract Data</a></p>
                 <p><a href="{%url 'signin'%}" class="nav">Logout</a></p>
 
-                {% elif request.session.UserType == 'user' %}
+                {% elif request.session.UserType == 'User' %}
                 <p class="ur_name">Hello! {{ request.session.FirstName }}</p>
                 <p><a href="{%url 'signin'%}" class="nav">Logout</a></p>
                 {% endif %}
@@ -410,17 +410,17 @@
                         </section>
                     </section>
                     <section class="containersub">
-                        {% if request.session.UserType == 'admin' %}
+                        {% if request.session.UserType == 'Admin' %}
                         <input class="Submitbotton" type="reset" name="clearAll" value="CLEAR ALL" id="clearAll"></input>
                         <input class="Submitbotton" type="submit" name="submit" value="SUBMIT LINEUP" id="submit">
                         <button id="exportBtn" type="button" class="Submitbotton">Export to Excel</button>
 
-                        {% elif request.session.UserType == 'superuser' %}
+                        {% elif request.session.UserType == 'Superuser' %}
                         <input class="Submitbotton" type="reset" name="clearAll" value="CLEAR ALL" id="clearAll"></input>
                         <input class="Submitbotton" type="submit" name="submit" value="SUBMIT LINEUP" id="submit">
                         <button id="exportBtn" type="button" class="Submitbotton">Export to Excel</button>
 
-                        {% elif request.session.UserType == 'user' %}
+                        {% elif request.session.UserType == 'User' %}
                         <input class="Submitbotton" type="reset" name="clearAll" value="CLEAR ALL" id="clearAll"></input>
                         <input class="Submitbotton" type="submit" name="submit" value="SUBMIT LINEUP" id="submit">
                         {% endif %}
