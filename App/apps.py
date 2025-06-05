@@ -35,7 +35,7 @@ class AppConfig(AppConfig):
                     move_sailed_data,
                     trigger='cron',
                     hour=2,
-                    minute=17,  
+                    minute=30,  
                     id='move_sailed_data',
                     replace_existing=True
                 )
