@@ -114,9 +114,9 @@ class SailedData(models.Model):
 class UniquePortDetails(models.Model):
     Country = models.CharField(max_length=20, default="")
     Port = models.CharField(max_length=20, default="", unique=True)
-    PIC1Mail = models.EmailField(max_length=30, default="")
-    PIC2Mail = models.EmailField(max_length=30, default="")
-    PIC3Mail = models.EmailField(max_length=30, default="")
+    PIC1Mail = models.EmailField(max_length=60, default="")
+    PIC2Mail = models.EmailField(max_length=60, default="")
+    PIC3Mail = models.EmailField(max_length=60, default="")
     LastUpdated = models.DateField(null=True, blank=True)
     
 
@@ -130,9 +130,9 @@ class UniquePortDetails(models.Model):
 class Port_Berth_Form(models.Model):
     Country = models.CharField(max_length=20, default="")
     Port = models.CharField(max_length=20, default="")
-    PIC1Mail = models.EmailField(max_length=30, default="")
-    PIC2Mail = models.EmailField(max_length=30, default="")
-    PIC3Mail = models.EmailField(max_length=30, default="")
+    PIC1Mail = models.EmailField(max_length=60, default="")
+    PIC2Mail = models.EmailField(max_length=60, default="")
+    PIC3Mail = models.EmailField(max_length=60, default="")
     Berth = models.CharField(max_length=20, default="")
     Berth_Type = models.CharField(max_length=20, default="")
     Cargos_Handled_on_Berth = models.CharField(max_length=200, default="")
