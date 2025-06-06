@@ -28,7 +28,11 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['"isslineup.com", "www.isslineup.com"']
+ALLOWED_HOSTS = [
+    "isslineup.com",
+    "www.isslineup.com",
+    "iss-vessel-lineup-wdy7t.ondigitalocean.app",
+]
 
 
 # Application definition
