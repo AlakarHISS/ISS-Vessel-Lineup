@@ -163,5 +163,18 @@ EMAIL_USE_SSL=True
 EMAIL_HOST_USER="alakar.harijan2000@gmail.com"
 EMAIL_HOST_PASSWORD="vmzv ndwr goky laor"
 
-# APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
-# SCHEDULER_DEFAULT = True
+
+# Ensure HTTPS is enforced (critical for App Platform)
+SECURE_SSL_REDIRECT = True  # Redirects HTTP → HTTPS
+
+# Required for DigitalOcean's proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Additional security settings (recommended)
+SESSION_COOKIE_SECURE = True      # Only send session cookies over HTTPS
+CSRF_COOKIE_SECURE = True         # Only send CSRF cookies over HTTPS
+SECURE_HSTS_SECONDS = 31536000    # Enable HSTS (1 year)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to subdomains
+SECURE_HSTS_PRELOAD = True        # Allow HSTS preloading
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME sniffing
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filter
