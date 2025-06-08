@@ -52,7 +52,7 @@ def move_sailed_data():
     sailed_records.delete()          
 
 
-def send_port_update_emails():
+def send_port_update_emails_1():
     from django.core.mail import send_mail, BadHeaderError
     from smtplib import SMTPException
     import sys
@@ -125,7 +125,151 @@ def send_port_update_emails():
     
     return f"Sent {email_count} emails"
 
+def send_port_update_emails_2():
+    from django.core.mail import send_mail, BadHeaderError
+    from smtplib import SMTPException
+    import sys
+    from datetime import timedelta
+    from App.models import UniquePortDetails
+    
+    now_utc = timezone.now()
+    ist_offset = timedelta(hours=5, minutes=30)
+    today = (now_utc + ist_offset).date()
+    
+    ports = UniquePortDetails.objects.filter(LastUpdated__lt=today)
 
+    
+    if not ports.exists():
+        return "No emails sent - no ports need updates"
+    
+    email_count = 0
+    additional_emails = [
+        'alakar.harijan@iss-shipping.com',
+        'alakar_harijan@outlook.com'
+    ]
+    
+    for port in ports:
+        
+        # Build recipient list with validation
+        recipient_list = [
+            email for email in [
+                port.PIC1Mail,
+                port.PIC2Mail,
+                port.PIC3Mail,
+                *additional_emails
+            ] if email and isinstance(email, str) and '@' in email
+        ]
+        
+        if not recipient_list:
+            continue
+        
+        # Prepare email content
+        try:
+            subject = f"LineUp Update Required: {port.Port} ({port.Country})"
+            message = f"""
+                        Dear Team,
+
+                        Our records show that the information for {port.Port} in {port.Country} hasn't been updated since {port.LastUpdated.strftime('%Y-%m-%d')}.
+
+                        Request you to log in to the lineup system to update lineup for {port.Port}.
+
+                        Thank you,
+                        Lineup Management System
+                        """
+            
+            result = send_mail(
+                subject=subject,
+                message=message,
+                from_email='no-reply@iss-shipping.com',
+                recipient_list=recipient_list,
+                fail_silently=False
+            )
+            
+            if result == 1:
+                email_count += 1     
+                
+        except BadHeaderError:
+            print("ERROR: Invalid header found in email content")
+        except SMTPException as e:
+            print(f"SMTP ERROR: {str(e)}")
+        except Exception as e:
+            print(f"UNEXPECTED ERROR: {str(e)}")
+            print(f"Error type: {sys.exc_info()[0]}")
+    
+    return f"Sent {email_count} emails"
+
+def send_port_update_emails_3():
+    from django.core.mail import send_mail, BadHeaderError
+    from smtplib import SMTPException
+    import sys
+    from datetime import timedelta
+    from App.models import UniquePortDetails
+    
+    now_utc = timezone.now()
+    ist_offset = timedelta(hours=5, minutes=30)
+    today = (now_utc + ist_offset).date()
+    
+    ports = UniquePortDetails.objects.filter(LastUpdated__lt=today)
+
+    
+    if not ports.exists():
+        return "No emails sent - no ports need updates"
+    
+    email_count = 0
+    additional_emails = [
+        'alakar.harijan@iss-shipping.com',
+        'alakar_harijan@outlook.com'
+    ]
+    
+    for port in ports:
+        
+        # Build recipient list with validation
+        recipient_list = [
+            email for email in [
+                port.PIC1Mail,
+                port.PIC2Mail,
+                port.PIC3Mail,
+                *additional_emails
+            ] if email and isinstance(email, str) and '@' in email
+        ]
+        
+        if not recipient_list:
+            continue
+        
+        # Prepare email content
+        try:
+            subject = f"LineUp Update Required: {port.Port} ({port.Country})"
+            message = f"""
+                        Dear Team,
+
+                        Our records show that the information for {port.Port} in {port.Country} hasn't been updated since {port.LastUpdated.strftime('%Y-%m-%d')}.
+
+                        Request you to log in to the lineup system to update lineup for {port.Port}.
+
+                        Thank you,
+                        Lineup Management System
+                        """
+            
+            result = send_mail(
+                subject=subject,
+                message=message,
+                from_email='no-reply@iss-shipping.com',
+                recipient_list=recipient_list,
+                fail_silently=False
+            )
+            
+            if result == 1:
+                email_count += 1     
+                
+        except BadHeaderError:
+            print("ERROR: Invalid header found in email content")
+        except SMTPException as e:
+            print(f"SMTP ERROR: {str(e)}")
+        except Exception as e:
+            print(f"UNEXPECTED ERROR: {str(e)}")
+            print(f"Error type: {sys.exc_info()[0]}")
+    
+    return f"Sent {email_count} emails"
 
 def send_port_update_missed_emails():
     from django.core.mail import send_mail, BadHeaderError
